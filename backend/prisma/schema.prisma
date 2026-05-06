@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  name     String
+  email    String   @unique
+  password String
+  role     String   @default("user")
+
+  laporan  Laporan[]
+  comments Comment[]
+}
+
+model Category {
+  id       Int      @id @default(autoincrement())
+  name     String
+
+  laporan  Laporan[]
+}
+
+model Laporan {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  image       String?
+  latitude    Float?
+  longitude   Float?
+  severity    String
+  status      String   @default("pending")
+  createdAt   DateTime @default(now())
+
+  userId      Int
+  categoryId  Int
+
+  user        User     @relation(fields: [userId], references: [id])
+  category    Category @relation(fields: [categoryId], references: [id])
+  comments    Comment[]
+}
+
+model Comment {
+  id         Int      @id @default(autoincrement())
+  comment    String
+  createdAt  DateTime @default(now())
+
+  userId     Int
+  laporanId  Int
+
+  user       User     @relation(fields: [userId], references: [id])
+  laporan    Laporan  @relation(fields: [laporanId], references: [id])
+}
