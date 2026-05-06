@@ -11,7 +11,6 @@ import { upload } from "../middleware/uploadMiddleware";
 
 const router = express.Router();
 
-// semua butuh login 🔐
 router.post("/", authMiddleware, upload.single("image"), createLaporan);
 router.get("/", authMiddleware, getAllLaporan);
 router.get("/:id", authMiddleware, getLaporanById);

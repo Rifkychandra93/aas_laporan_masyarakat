@@ -13,7 +13,6 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/laporan", laporanRoutes);
 
-// serve static images
 app.use("/uploads", express.static("uploads"));
 
 app.listen(3000, () => {
