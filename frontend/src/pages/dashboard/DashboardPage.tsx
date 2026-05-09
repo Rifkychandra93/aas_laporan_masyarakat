@@ -8,12 +8,11 @@ const DashboardPage = () => {
   const handleLogout = () => { logout(); navigate("/login"); };
 
   const roleLabel: Record<string, string> = {
-    USER: "Pengguna", ADMIN: "Admin", SUPER_ADMIN: "Super Admin",
+    USER: "Pengguna", ADMIN: "Admin",
   };
   const roleStyle: Record<string, { color: string; bg: string; border: string }> = {
     USER:        { color: "#5b9cf6", bg: "#ebf3ff", border: "#bfdbfe" },
     ADMIN:       { color: "#4285f4", bg: "#eff6ff", border: "#bfdbfe" },
-    SUPER_ADMIN: { color: "#1d4ed8", bg: "#dbeafe", border: "#93c5fd" },
   };
   const role = user?.role ?? "USER";
   const rs   = roleStyle[role] ?? roleStyle.USER;

@@ -4,13 +4,14 @@ import ProtectedRoute from "../components/common/ProtectedRoute";
 import LoginPage from "../pages/auth/LoginPage";
 import RegisterPage from "../pages/auth/RegisterPage";
 import DashboardPage from "../pages/dashboard/DashboardPage";
+import LandingPage from "../pages/LandingPage";
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route
@@ -23,7 +24,7 @@ const AppRoutes = () => {
           />
 
           <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
+        </Routes>k
       </AuthProvider>
     </BrowserRouter>
   );
