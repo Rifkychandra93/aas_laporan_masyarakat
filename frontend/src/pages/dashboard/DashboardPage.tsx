@@ -1,64 +1,70 @@
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { LogOut, FileText, User, Shield } from "lucide-react";
+import DashboardNavbar from "../../components/ui/DashboardNavbar";
+import ReportList from "../../components/ui/ReportList";
+import DashboardStats from "../../components/ui/DashboardStats";
+import { useEffect, useState } from "react";
+import { getAllLaporan } from "../../services/laporanService";
 
 const DashboardPage = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const handleLogout = () => { logout(); navigate("/login"); };
+   const [reports, setReports] = useState([]);
 
-  const roleLabel: Record<string, string> = {
-    USER: "Pengguna", ADMIN: "Admin",
-  };
-  const roleStyle: Record<string, { color: string; bg: string; border: string }> = {
-    USER:        { color: "#5b9cf6", bg: "#ebf3ff", border: "#bfdbfe" },
-    ADMIN:       { color: "#4285f4", bg: "#eff6ff", border: "#bfdbfe" },
-  };
-  const role = user?.role ?? "USER";
-  const rs   = roleStyle[role] ?? roleStyle.USER;
+   useEffect(() => {
+      fetchLaporan();
+   }, []);
 
-  return (
-    <div className="dashboard-layout">
-      <nav className="dashboard-nav">
-        <div className="dashboard-nav-brand">
-          <FileText size={20} color="var(--blue)" strokeWidth={1.5} />
-          <span>Report<span className="brand-dot-in">.in</span></span>
-        </div>
-        <div className="dashboard-nav-right">
-          <div className="dashboard-role-pill">
-            <User size={13} />
-            {roleLabel[role]}
-          </div>
-          <button id="logout-btn" className="dashboard-logout" onClick={handleLogout}>
-            <LogOut size={13} />
-            Keluar
-          </button>
-        </div>
-      </nav>
+   const fetchLaporan = async () => {
+      try {
+         const data = await getAllLaporan();
+         setReports(data);
+      } catch (error) {
+         console.log(error);
+      }
+   };
 
-      <main className="dashboard-main">
-        <div className="dashboard-card">
-          <div className="dashboard-badge"
-            style={{ color: rs.color, background: rs.bg, borderColor: rs.border }}>
-            <Shield size={12} /> {roleLabel[role]}
-          </div>
-          <h1>Selamat Datang!</h1>
-          <p>
-            Anda berhasil login sebagai <strong>{roleLabel[role]}</strong>.<br />
-            Sistem Report.in berjalan dengan baik.
+   return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f8fafc",
+      }}
+    >
+      <DashboardNavbar />
+
+      <div
+        style={{
+          maxWidth: 1400,
+          margin: "0 auto",
+          padding: "2rem",
+        }}
+      >
+        <div
+          style={{
+            marginBottom: "2rem",
+          }}
+        >
+          <h1
+            style={{
+              fontSize: "2rem",
+              fontWeight: 800,
+              color: "#0f172a",
+            }}
+          >
+            Laporan Warga
+          </h1>
+
+          <p
+            style={{
+              color: "#64748b",
+              marginTop: "0.5rem",
+            }}
+          >
+            Semua laporan terbaru dari masyarakat
           </p>
-          <div className="dashboard-meta">
-            <div className="dashboard-meta-item">
-              <span className="dashboard-meta-label">User ID</span>
-              <span className="dashboard-meta-value" style={{ color: "var(--blue)" }}>#{user?.id}</span>
-            </div>
-            <div className="dashboard-meta-item">
-              <span className="dashboard-meta-label">Role</span>
-              <span className="dashboard-meta-value" style={{ color: rs.color }}>{role}</span>
-            </div>
-          </div>
         </div>
-      </main>
+
+        <DashboardStats total={reports.length} />
+
+        <ReportList />
+      </div>
     </div>
   );
 };

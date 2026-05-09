@@ -21,6 +21,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
   const [user, setUser] = useState<DecodedToken | null>(null);
 
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    setUser(null);
+  };
+
+  const login = async (payload: LoginPayload) => {
+    const data = await loginUser(payload);
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      setToken(data.token);
+    }
+  };
+
   useEffect(() => {
     if (token) {
       try {
@@ -38,19 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [token]);
 
-  const login = async (payload: LoginPayload) => {
-    const data = await loginUser(payload);
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      setToken(data.token);
-    }
-  };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    setUser(null);
-  };
 
   return (
     <AuthContext.Provider

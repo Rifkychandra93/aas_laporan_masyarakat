@@ -79,7 +79,6 @@ const TestimoniSection = () => {
                 }}
               >
                 <div style={{ display: "flex", gap: "4px", marginBottom: "1.5rem", color: "#fbbf24", fontSize: "1.25rem" }}>
-                  ★★★★★
                 </div>
                 <p style={{
                   fontSize: "1.1rem",

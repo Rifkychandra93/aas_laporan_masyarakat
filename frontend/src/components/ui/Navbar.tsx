@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import logo from "../../assets/logo1.png";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -51,20 +52,18 @@ const Navbar = () => {
       }}
     >
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 76 }}>
-        <a href="#hero" style={{ display: "flex", alignItems: "center", gap: "0.75rem", textDecoration: "none" }}>
-          <div style={{
-            width: 44, height: 44,
-            borderRadius: 12,
-            background: "#5b9cf6",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            boxShadow: "0 4px 12px rgba(91,156,246,0.3)",
-            flexShrink: 0,
-            transition: "all 0.3s ease",
-          }}>
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
+        <a href="/" style={{ display: "flex", alignItems: "center", gap: "0.15rem", textDecoration: "none" }}>
+            <img
+              src={logo}
+              alt="Report.in Logo"
+              style={{
+                width: 94,
+                height: 94,
+                objectFit: "contain",
+                flexShrink: 0,
+                marginRight: "-0.6rem",
+              }}
+            />
           <div>
             <span style={{
               fontWeight: 800,

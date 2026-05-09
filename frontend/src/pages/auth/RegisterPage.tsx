@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, User, FileText } from "lucide-react";
 import { registerUser } from "../../services/authService";
+import logo from "../../assets/logo1.png";
 
 const Spinner = ({ text = "Memproses..." }) => (
   <span className="spinner-wrap">
@@ -113,11 +114,20 @@ const RegisterPage = () => {
 
   return (
     <div className="auth-page">
-      <div className="auth-topbar">
-        <div className="auth-topbar-icon"><FileText size={18} /></div>
-        <span className="auth-topbar-name">
+            <div className="auth-topbar">
+        <img
+          src={logo}
+          alt="Report.in Logo"
+          style={{
+            width: "72px",
+            height: "72px",
+            objectFit: "contain",
+            marginRight: "-1rem",
+          }}
+        />
+        <a href = "/" className="auth-topbar-name">
           Report<span>.in</span>
-        </span>
+        </a>
       </div>
 
       <div className="auth-card auth-card-wide">

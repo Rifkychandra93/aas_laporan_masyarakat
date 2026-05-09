@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, FileText } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import logo from "../../assets/logo1.png";
 
 const Spinner = () => (
   <span className="spinner-wrap">
@@ -93,10 +94,19 @@ const LoginPage = () => {
   return (
     <div className="auth-page">
       <div className="auth-topbar">
-        <div className="auth-topbar-icon"><FileText size={18} /></div>
-        <span className="auth-topbar-name">
+        <img
+          src={logo}
+          alt="Report.in Logo"
+          style={{
+            width: "72px",
+            height: "72px",
+            objectFit: "contain",
+            marginRight: "-1rem",
+          }}
+        />
+        <a href = "/" className="auth-topbar-name">
           Report<span>.in</span>
-        </span>
+        </a>
       </div>
 
       <div className="auth-card">

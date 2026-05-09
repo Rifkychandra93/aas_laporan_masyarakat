@@ -420,6 +420,25 @@ input  { font-family: inherit; }
   margin-bottom: 1.25rem;
 }
 
+.dash-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: none;
+  background: #eff6ff;
+  color: #5b9cf6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.dash-btn:hover {
+  background: #5b9cf6;
+  color: white;
+}
+
 .dashboard-card h1 { font-size: 1.5rem; font-weight: 800; color: var(--text-dark); margin-bottom: 0.625rem; letter-spacing: -0.025em; }
 .dashboard-card p  { font-size: 0.9rem; color: var(--text-light); line-height: 1.7; margin-bottom: 1.75rem; }
 

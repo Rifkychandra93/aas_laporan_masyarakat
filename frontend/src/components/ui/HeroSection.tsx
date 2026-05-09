@@ -180,9 +180,6 @@ const HeroSection = () => {
           }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
               <div>
-                <p style={{ fontSize: "0.75rem", color: "#5b9cf6", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>
-                  Live Dashboard
-                </p>
                 <h3 style={{ fontSize: "1.25rem", fontWeight: 800, color: "#0f172a" }}>
                   Laporan Terbaru
                 </h3>

@@ -11,9 +11,9 @@ const LandingPage = () => {
     <div className="min-h-screen overflow-x-hidden">
       <Navbar />
       <HeroSection />
-      <StatsSection />
       <FeaturesSection />
       <HowItWorks />
+      <StatsSection />
       <TestimoniSection />
       <Footer />
     </div>
