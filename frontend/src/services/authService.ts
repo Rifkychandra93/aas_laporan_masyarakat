@@ -30,4 +30,14 @@ export const registerUser = async (
   return response.data;
 };
 
+export const getProfile = async () => {
+  const response = await api.get("/auth/me");
+  return response.data;
+};
+
+export const updateProfile = async (payload: { name: string }) => {
+  const response = await api.put("/auth/me", payload);
+  return response.data;
+};
+
 export default api;

@@ -54,6 +54,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 
 
+  const updateToken = (newToken: string) => {
+    localStorage.setItem("token", newToken);
+    setToken(newToken);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -61,6 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user,
         login,
         logout,
+        updateToken,
         isAuthenticated: !!token,
       }}
     >

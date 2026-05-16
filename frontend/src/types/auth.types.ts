@@ -25,6 +25,7 @@ export interface User {
 
 export interface DecodedToken {
   id: number;
+  name: string;
   role: "USER" | "ADMIN" | "SUPER_ADMIN";
   iat: number;
   exp: number;
@@ -35,5 +36,6 @@ export interface AuthContextType {
   user: DecodedToken | null;
   login: (payload: LoginPayload) => Promise<void>;
   logout: () => void;
+  updateToken: (newToken: string) => void;
   isAuthenticated: boolean;
 }

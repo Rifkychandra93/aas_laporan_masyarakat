@@ -14,8 +14,8 @@ export const createLaporan = async (req: Request, res: Response) => {
       data: {
         title,
         description,
-        latitude,
-        longitude,
+        latitude: latitude ? parseFloat(latitude) : null,
+        longitude: longitude ? parseFloat(longitude) : null,
         severity,
         categoryId: Number(categoryId),
         image,
@@ -80,6 +80,19 @@ export const getLaporanById = async (req: Request, res: Response) => {
             name: true,
           },
         },
+        comments: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
     });
 
@@ -126,8 +139,8 @@ export const updateLaporan = async (req: Request, res: Response) => {
       data: {
         title,
         description,
-        latitude,
-        longitude,
+        latitude: latitude ? parseFloat(latitude) : null,
+        longitude: longitude ? parseFloat(longitude) : null,
         severity,
         categoryId: Number(categoryId),
         image,

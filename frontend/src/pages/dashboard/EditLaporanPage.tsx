@@ -1,0 +1,405 @@
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  ArrowLeft,
+  Upload,
+  X,
+  MapPin,
+  FileText,
+  AlertTriangle,
+  CheckCircle2,
+  Loader2,
+} from "lucide-react";
+import DashboardNavbar from "../../components/ui/DashboardNavbar";
+import { getLaporanById, updateLaporan } from "../../services/laporanService";
+
+const SEVERITY_OPTIONS = [
+  { value: "low",    label: "Rendah",   color: "#22c55e", bg: "#f0fdf4" },
+  { value: "medium", label: "Sedang",   color: "#f59e0b", bg: "#fffbeb" },
+  { value: "high",   label: "Tinggi",   color: "#ef4444", bg: "#fff1f2" },
+];
+
+const CATEGORY_OPTIONS = [
+  { id: 1, name: "Infrastruktur" },
+  { id: 2, name: "Lingkungan" },
+  { id: 3, name: "Keamanan" },
+  { id: 4, name: "Sosial" },
+  { id: 5, name: "Lainnya" },
+];
+
+const EditLaporanPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    latitude: "",
+    longitude: "",
+    severity: "low",
+    categoryId: "1",
+  });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [existingImage, setExistingImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (id) fetchLaporan();
+  }, [id]);
+
+  const fetchLaporan = async () => {
+    try {
+      const data = await getLaporanById(id!);
+      setForm({
+        title: data.title,
+        description: data.description,
+        latitude: String(data.latitude),
+        longitude: String(data.longitude),
+        severity: data.severity,
+        categoryId: String(data.category?.id || 1),
+      });
+      if (data.image) {
+        setExistingImage(data.image);
+        setImagePreview(`http://localhost:3000/uploads/${data.image}`);
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Gagal mengambil data laporan.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setExistingImage(null); // Clear existing if new selected
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    setExistingImage(null);
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  const getLocation = () => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition((pos) => {
+      setForm((prev) => ({
+        ...prev,
+        latitude: pos.coords.latitude.toFixed(6),
+        longitude: pos.coords.longitude.toFixed(6),
+      }));
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id) return;
+    setError("");
+
+    if (!form.title.trim() || !form.description.trim()) {
+      setError("Judul dan deskripsi wajib diisi.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const fd = new FormData();
+      fd.append("title", form.title);
+      fd.append("description", form.description);
+      fd.append("latitude", form.latitude || "0");
+      fd.append("longitude", form.longitude || "0");
+      fd.append("severity", form.severity);
+      fd.append("categoryId", form.categoryId);
+      
+      if (imageFile) {
+        fd.append("image", imageFile);
+      } else if (existingImage) {
+        // We might need a way to tell the backend to keep the existing image
+        // Usually, if 'image' is not sent, it stays the same.
+      }
+
+      await updateLaporan(Number(id), fd);
+      setSuccess(true);
+      setTimeout(() => navigate(`/dashboard/laporan/${id}`), 1800);
+    } catch (err: any) {
+      setError(err?.response?.data?.message ?? "Gagal memperbarui laporan.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) return (
+    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+      <DashboardNavbar />
+      <div style={{ display: "flex", justifyContent: "center", padding: "5rem" }}>
+        <Loader2 size={32} style={{ animation: "spin 1s linear infinite", color: "#3b82f6" }} />
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#f8fafc", fontFamily: "'Inter','Segoe UI',sans-serif" }}>
+      <DashboardNavbar />
+
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "2rem 1.5rem" }}>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.75rem" }}>
+          <button
+            onClick={() => navigate(`/dashboard/laporan/${id}`)}
+            style={backButtonStyle}
+          >
+            <ArrowLeft size={16} />
+          </button>
+          <div>
+            <h1 style={{ fontSize: "1.3rem", fontWeight: 800, color: "#0f172a", margin: 0 }}>
+              Edit Laporan
+            </h1>
+            <p style={{ fontSize: "0.8rem", color: "#94a3b8", margin: 0, marginTop: "0.15rem" }}>
+              Perbarui informasi laporan kamu
+            </p>
+          </div>
+        </div>
+
+        {success && (
+          <div style={successAlertStyle}>
+            <CheckCircle2 size={20} color="#16a34a" />
+            <div>
+              <p style={{ fontWeight: 700, color: "#15803d", margin: 0, fontSize: "0.9rem" }}>
+                Laporan berhasil diperbarui!
+              </p>
+              <p style={{ color: "#4ade80", margin: 0, fontSize: "0.78rem" }}>
+                Kembali ke detail laporan…
+              </p>
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div style={errorAlertStyle}>
+            <AlertTriangle size={18} color="#f43f5e" />
+            <p style={{ color: "#be123c", margin: 0, fontSize: "0.85rem", fontWeight: 600 }}>
+              {error}
+            </p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div style={cardStyle}>
+            {/* ── SECTION: INFO DASAR ── */}
+            <div style={{ padding: "1.5rem", borderBottom: "1px solid #f1f5f9" }}>
+              <SectionLabel icon={<FileText size={15} />} title="Informasi Laporan" />
+
+              <Field label="Judul Laporan">
+                <input
+                  name="title"
+                  value={form.title}
+                  onChange={handleChange}
+                  style={inputStyle}
+                  required
+                />
+              </Field>
+
+              <Field label="Deskripsi">
+                <textarea
+                  name="description"
+                  value={form.description}
+                  onChange={handleChange}
+                  rows={4}
+                  style={{ ...inputStyle, resize: "vertical", minHeight: 100 }}
+                  required
+                />
+              </Field>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.875rem" }}>
+                <Field label="Kategori">
+                  <select name="categoryId" value={form.categoryId} onChange={handleChange} style={inputStyle}>
+                    {CATEGORY_OPTIONS.map((c) => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                </Field>
+
+                <Field label="Tingkat Urgensi">
+                  <select name="severity" value={form.severity} onChange={handleChange} style={inputStyle}>
+                    {SEVERITY_OPTIONS.map((s) => (
+                      <option key={s.value} value={s.value}>{s.label}</option>
+                    ))}
+                  </select>
+                </Field>
+              </div>
+            </div>
+
+            {/* ── SECTION: LOKASI ── */}
+            <div style={{ padding: "1.5rem", borderBottom: "1px solid #f1f5f9" }}>
+              <SectionLabel icon={<MapPin size={15} />} title="Lokasi Kejadian" />
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.875rem", marginBottom: "0.75rem" }}>
+                <Field label="Latitude">
+                  <input name="latitude" value={form.latitude} onChange={handleChange} style={inputStyle} />
+                </Field>
+                <Field label="Longitude">
+                  <input name="longitude" value={form.longitude} onChange={handleChange} style={inputStyle} />
+                </Field>
+              </div>
+
+              <button type="button" onClick={getLocation} style={locationButtonStyle}>
+                <MapPin size={13} /> Gunakan lokasi saat ini
+              </button>
+            </div>
+
+            {/* ── SECTION: FOTO ── */}
+            <div style={{ padding: "1.5rem" }}>
+              <SectionLabel icon={<Upload size={15} />} title="Foto Pendukung" />
+
+              {imagePreview ? (
+                <div style={{ position: "relative", display: "inline-block", width: "100%" }}>
+                  <img
+                    src={imagePreview}
+                    alt="preview"
+                    style={{
+                      width: "100%", maxHeight: 240, objectFit: "cover",
+                      borderRadius: 12, border: "1px solid #e2e8f0",
+                    }}
+                  />
+                  <button type="button" onClick={removeImage} style={removeImageButtonStyle}>
+                    <X size={14} />
+                  </button>
+                </div>
+              ) : (
+                <div
+                  onClick={() => fileRef.current?.click()}
+                  style={uploadBoxStyle}
+                >
+                  <Upload size={22} color="#94a3b8" style={{ margin: "0 auto 0.5rem" }} />
+                  <p style={{ color: "#64748b", fontSize: "0.85rem", fontWeight: 600, margin: 0 }}>
+                    Klik untuk ganti foto
+                  </p>
+                </div>
+              )}
+
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImage}
+                style={{ display: "none" }}
+              />
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: "0.75rem", marginTop: "1.25rem", justifyContent: "flex-end" }}>
+            <button
+              type="button"
+              onClick={() => navigate(`/dashboard/laporan/${id}`)}
+              style={cancelButtonStyle}
+            >
+              Batal
+            </button>
+
+            <button
+              type="submit"
+              disabled={submitting || success}
+              style={{
+                ...submitButtonStyle,
+                background: submitting || success ? "#93c5fd" : "linear-gradient(135deg,#3b82f6,#2563eb)",
+              }}
+            >
+              {submitting ? <Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} /> : null}
+              {submitting ? "Menyimpan…" : "Simpan Perubahan"}
+            </button>
+          </div>
+        </form>
+      </div>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
+};
+
+/* ── Styles ── */
+const backButtonStyle: React.CSSProperties = {
+  display: "flex", alignItems: "center", justifyContent: "center",
+  width: 36, height: 36, borderRadius: 10, border: "1px solid #e2e8f0",
+  background: "#fff", cursor: "pointer", color: "#475569",
+};
+
+const cardStyle: React.CSSProperties = {
+  background: "#fff", borderRadius: 18, border: "1px solid #e2e8f0",
+  boxShadow: "0 2px 12px rgba(0,0,0,0.05)", overflow: "hidden",
+};
+
+const inputStyle: React.CSSProperties = {
+  width: "100%", padding: "0.6rem 0.85rem", borderRadius: 9,
+  border: "1px solid #e2e8f0", fontSize: "0.875rem", color: "#0f172a",
+  background: "#fff", boxSizing: "border-box",
+};
+
+const successAlertStyle: React.CSSProperties = {
+  background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 14,
+  padding: "1.25rem 1.5rem", marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "0.75rem",
+};
+
+const errorAlertStyle: React.CSSProperties = {
+  background: "#fff1f2", border: "1px solid #fecdd3", borderRadius: 14,
+  padding: "1rem 1.25rem", marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: "0.7rem",
+};
+
+const locationButtonStyle: React.CSSProperties = {
+  display: "flex", alignItems: "center", gap: "0.45rem", fontSize: "0.8rem",
+  fontWeight: 600, color: "#3b82f6", background: "#eff6ff", border: "1px solid #bfdbfe",
+  borderRadius: 8, padding: "0.45rem 0.9rem", cursor: "pointer",
+};
+
+const uploadBoxStyle: React.CSSProperties = {
+  border: "2px dashed #cbd5e1", borderRadius: 12, padding: "2rem",
+  textAlign: "center", cursor: "pointer", background: "#f8fafc",
+};
+
+const removeImageButtonStyle: React.CSSProperties = {
+  position: "absolute", top: 8, right: 8, width: 28, height: 28,
+  borderRadius: "50%", background: "rgba(0,0,0,0.55)", border: "none",
+  color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+};
+
+const cancelButtonStyle: React.CSSProperties = {
+  padding: "0.7rem 1.4rem", borderRadius: 10, fontSize: "0.875rem",
+  fontWeight: 600, border: "1px solid #e2e8f0", background: "#fff",
+  color: "#475569", cursor: "pointer",
+};
+
+const submitButtonStyle: React.CSSProperties = {
+  padding: "0.7rem 1.75rem", borderRadius: 10, fontSize: "0.875rem",
+  fontWeight: 700, border: "none", color: "#fff", cursor: "pointer",
+  display: "flex", alignItems: "center", gap: "0.5rem", boxShadow: "0 4px 14px rgba(59,130,246,0.35)",
+};
+
+const SectionLabel = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
+  <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "1rem" }}>
+    <span style={{ color: "#3b82f6" }}>{icon}</span>
+    <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: "0.06em" }}>{title}</span>
+  </div>
+);
+
+const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
+  <div style={{ marginBottom: "0.875rem" }}>
+    <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 600, color: "#475569", marginBottom: "0.35rem" }}>{label}</label>
+    {children}
+  </div>
+);
+
+export default EditLaporanPage;

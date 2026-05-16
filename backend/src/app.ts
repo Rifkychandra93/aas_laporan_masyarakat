@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes";
 import laporanRoutes from "./routes/laporanRoutes";
 import { upload } from "./middleware/uploadMiddleware";
 import adminRoutes from "./routes/adminRoutes";
+import commentRoutes from "./routes/commentRoutes";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/laporan", laporanRoutes);
+app.use("/api/comment", commentRoutes);
 
 app.use("/uploads", express.static("uploads"));
 

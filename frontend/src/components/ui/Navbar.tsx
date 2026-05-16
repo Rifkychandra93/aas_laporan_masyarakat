@@ -25,7 +25,7 @@ const Navbar = () => {
       const targetId = href.replace("#", "");
       const elem = document.getElementById(targetId);
       if (elem) {
-        const top = elem.getBoundingClientRect().top + window.scrollY - 76; // offset for fixed navbar
+        const top = elem.getBoundingClientRect().top + window.scrollY - 76;
         window.scrollTo({ top, behavior: "smooth" });
       }
     } else {

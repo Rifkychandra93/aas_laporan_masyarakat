@@ -53,14 +53,6 @@ const HeroSection = () => {
             backdropFilter: "blur(10px)",
             border: "1px solid rgba(255,255,255,0.25)",
           }}>
-            <span style={{
-              width: 10,
-              height: 10,
-              borderRadius: "50%",
-              background: "#4ade80",
-              display: "inline-block",
-              animation: "pulse-dot 2s infinite",
-            }} />
             <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#ffffff", letterSpacing: "0.02em" }}>
               Platform Pengaduan Resmi Masyarakat
             </span>
