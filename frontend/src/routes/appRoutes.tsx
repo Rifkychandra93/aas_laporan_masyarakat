@@ -11,6 +11,8 @@ import HistoryPage from "../pages/dashboard/HistoryPage";
 import ProfilePage from "../pages/dashboard/ProfilePage";
 import EditProfilePage from "../pages/dashboard/EditProfilePage";
 import LandingPage from "../pages/LandingPage";
+import AdminRoute from "../components/common/AdminRoute";
+import AdminDashboard from "../pages/admin/AdminDashboard";
 
 const AppRoutes = () => {
   return (
@@ -81,6 +83,15 @@ const AppRoutes = () => {
               <ProtectedRoute>
                 <EditProfilePage />
               </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/dashboard"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
             }
           />
 

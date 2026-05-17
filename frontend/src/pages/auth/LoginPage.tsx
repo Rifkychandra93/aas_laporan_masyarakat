@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, FileText } from "lucide-react";
+import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../context/AuthContext";
 import logo from "../../assets/logo1.png";
 
@@ -81,7 +82,20 @@ const LoginPage = () => {
     try {
       await login({ email, password });
       setAlert({ type: "success", message: "Login berhasil! Mengalihkan..." });
-      setTimeout(() => navigate("/dashboard"), 800);
+      
+      const token = localStorage.getItem("token");
+      let targetPath = "/dashboard";
+      if (token) {
+        try {
+          const decoded = jwtDecode<{ role?: string }>(token);
+          if (decoded.role?.toLowerCase() === "admin") {
+            targetPath = "/admin/dashboard";
+          }
+        } catch (err) {
+          console.error("Token decode error:", err);
+        }
+      }
+      setTimeout(() => navigate(targetPath), 800);
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message
         ?? "Login gagal. Periksa email dan password Anda.";

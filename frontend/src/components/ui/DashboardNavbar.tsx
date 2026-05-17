@@ -3,6 +3,11 @@ import { Bell, History, User, Plus, LogOut, UserCircle, Menu, X } from "lucide-r
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo1.png";
 import { useAuth } from "../../context/AuthContext";
+import { 
+  getNotifications, 
+  markNotificationAsRead, 
+  markAllNotificationsAsRead 
+} from "../../services/notificationService";
 
 const DashboardNavbar = () => {
   const navigate = useNavigate();
@@ -11,10 +16,57 @@ const DashboardNavbar = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Notifications State
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notificationsList, setNotificationsList] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const notificationsRef = useRef<HTMLDivElement>(null);
+
+  const fetchNotificationsData = async () => {
+    try {
+      const data = await getNotifications();
+      setNotificationsList(data);
+      const unread = data.filter((n: any) => !n.isRead).length;
+      setUnreadCount(unread);
+    } catch (error) {
+      console.error("Gagal memuat notifikasi:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchNotificationsData();
+      // Poll every 30 seconds for live updates
+      const interval = setInterval(fetchNotificationsData, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [user]);
+
+  const handleMarkAsRead = async (id: number) => {
+    try {
+      await markNotificationAsRead(id);
+      fetchNotificationsData();
+    } catch (error) {
+      console.error("Gagal menandai notifikasi:", error);
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    try {
+      await markAllNotificationsAsRead();
+      fetchNotificationsData();
+    } catch (error) {
+      console.error("Gagal menandai semua notifikasi:", error);
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
+      }
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -66,9 +118,81 @@ const DashboardNavbar = () => {
             >
               <History size={20} />
             </button>
-            <button style={iconButtonStyle} title="Notifikasi">
-              <Bell size={20} />
-            </button>
+            <div style={{ position: "relative", display: "flex", alignItems: "center" }} ref={notificationsRef}>
+              <button 
+                onClick={() => {
+                  setShowNotifications(!showNotifications);
+                  setShowDropdown(false);
+                }}
+                style={iconButtonStyle} 
+                title="Notifikasi"
+              >
+                <Bell size={20} />
+                {unreadCount > 0 && (
+                  <span style={unreadBadgeStyle}>
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {showNotifications && (
+                <div style={notificationsDropdownStyle}>
+                  <div style={notifHeaderStyle}>
+                    <h4 style={{ margin: 0, fontSize: "0.88rem", fontWeight: 800, color: "#0f172a" }}>Notifikasi</h4>
+                    {unreadCount > 0 && (
+                      <button onClick={handleMarkAllRead} style={markAllBtnStyle}>
+                        Tandai semua dibaca
+                      </button>
+                    )}
+                  </div>
+
+                  <div style={notifListStyle}>
+                    {notificationsList.length > 0 ? (
+                      notificationsList.map((notif) => (
+                        <div 
+                          key={notif.id} 
+                          onClick={() => handleMarkAsRead(notif.id)}
+                          style={{
+                            ...notifItemStyle,
+                            background: notif.isRead ? "transparent" : "#eff6ff",
+                          }}
+                        >
+                          <div style={{ display: "flex", gap: "0.75rem", width: "100%" }}>
+                            <div style={{
+                              ...notifIconBgStyle,
+                              background: notif.title.includes("Disetujui") ? "#ecfdf5" : "#fef2f2",
+                              color: notif.title.includes("Disetujui") ? "#10b981" : "#ef4444",
+                            }}>
+                              {notif.title.includes("Disetujui") ? "✓" : "✕"}
+                            </div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <p style={notifTitleStyle}>{notif.title}</p>
+                              <p style={notifMessageStyle}>{notif.message}</p>
+                              <span style={notifDateStyle}>
+                                {new Date(notif.createdAt).toLocaleDateString("id-ID", {
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit"
+                                })}
+                              </span>
+                            </div>
+                            {!notif.isRead && (
+                              <div style={unreadDotStyle} />
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div style={{ textAlign: "center", padding: "2.5rem 1rem", color: "#94a3b8" }}>
+                        <Bell size={28} style={{ marginBottom: "0.5rem", color: "#cbd5e1" }} />
+                        <p style={{ margin: 0, fontSize: "0.8rem", fontWeight: 600 }}>Tidak ada notifikasi baru</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           <div style={dividerStyle} className="hide-mobile" />
@@ -279,6 +403,110 @@ const dropdownItemStyle: React.CSSProperties = {
   padding: "0.6rem 0.8rem", border: "none", background: "transparent",
   fontSize: "0.82rem", fontWeight: 600, color: "#475569", cursor: "pointer",
   borderRadius: 10, textAlign: "left", transition: "background 0.15s",
+};
+
+const unreadBadgeStyle: React.CSSProperties = {
+  position: "absolute",
+  top: 4,
+  right: 4,
+  background: "#ef4444",
+  color: "#fff",
+  borderRadius: "50%",
+  width: 16,
+  height: 16,
+  fontSize: "0.62rem",
+  fontWeight: 800,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  border: "2px solid #fff",
+  boxShadow: "0 2px 5px rgba(239, 68, 68, 0.2)",
+};
+
+const notificationsDropdownStyle: React.CSSProperties = {
+  position: "absolute",
+  top: "calc(100% + 10px)",
+  right: 0,
+  width: 320,
+  background: "#fff",
+  borderRadius: 16,
+  border: "1px solid #e2e8f0",
+  boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+  overflow: "hidden",
+  zIndex: 1001,
+};
+
+const notifHeaderStyle: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "0.9rem 1rem",
+  borderBottom: "1px solid #f1f5f9",
+};
+
+const markAllBtnStyle: React.CSSProperties = {
+  border: "none",
+  background: "transparent",
+  color: "#3b82f6",
+  fontSize: "0.72rem",
+  fontWeight: 700,
+  cursor: "pointer",
+  padding: 0,
+};
+
+const notifListStyle: React.CSSProperties = {
+  maxHeight: 300,
+  overflowY: "auto",
+};
+
+const notifItemStyle: React.CSSProperties = {
+  padding: "0.85rem 1rem",
+  borderBottom: "1px solid #f8fafc",
+  cursor: "pointer",
+  transition: "background 0.15s",
+};
+
+const notifIconBgStyle: React.CSSProperties = {
+  width: 28,
+  height: 28,
+  borderRadius: "50%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: 800,
+  fontSize: "0.8rem",
+  flexShrink: 0,
+};
+
+const notifTitleStyle: React.CSSProperties = {
+  margin: 0,
+  fontSize: "0.8rem",
+  fontWeight: 800,
+  color: "#0f172a",
+};
+
+const notifMessageStyle: React.CSSProperties = {
+  margin: "0.15rem 0 0",
+  fontSize: "0.74rem",
+  color: "#475569",
+  lineHeight: 1.45,
+};
+
+const notifDateStyle: React.CSSProperties = {
+  display: "block",
+  marginTop: "0.3rem",
+  fontSize: "0.68rem",
+  color: "#94a3b8",
+};
+
+const unreadDotStyle: React.CSSProperties = {
+  width: 6,
+  height: 6,
+  borderRadius: "50%",
+  background: "#3b82f6",
+  alignSelf: "center",
+  flexShrink: 0,
+  boxShadow: "0 0 8px #3b82f6",
 };
 
 export default DashboardNavbar;

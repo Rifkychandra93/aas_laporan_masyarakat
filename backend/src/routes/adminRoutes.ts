@@ -1,8 +1,7 @@
 import express from "express";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { adminMiddleware } from "../middleware/adminMiddleware";
-import { dashboardStats } from "../controllers/adminControllers";
-import { approveLaporan, rejectLaporan } from "../controllers/adminControllers";
+import { dashboardStats, approveLaporan, rejectLaporan, getAllUsers, deleteLaporanAdmin } from "../controllers/adminControllers";
 
 const router = express.Router();
 
@@ -36,6 +35,20 @@ router.put(
     authMiddleware,
     adminMiddleware,
     dashboardStats
+  );
+
+  router.get(
+    "/users",
+    authMiddleware,
+    adminMiddleware,
+    getAllUsers
+  );
+
+  router.delete(
+    "/laporan/:id",
+    authMiddleware,
+    adminMiddleware,
+    deleteLaporanAdmin
   );
 
 export default router;

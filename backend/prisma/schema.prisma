@@ -8,16 +8,17 @@ datasource db {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  name     String
-  email    String   @unique
-  password String
-  role     String   @default("user")
-  location String?
-  createdAt DateTime @default(now())
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  password      String
+  role          String         @default("user")
+  location      String?
+  createdAt     DateTime       @default(now())
 
-  laporan  Laporan[]
-  comments Comment[]
+  laporan       Laporan[]
+  comments      Comment[]
+  notifications Notification[]
 }
 
 model Category {
@@ -54,6 +55,18 @@ model Comment {
   userId     Int
   laporanId  Int
 
-  user       User     @relation(fields: [userId], references: [id])
-  laporan    Laporan  @relation(fields: [laporanId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  laporan    Laporan  @relation(fields: [laporanId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  type      String   @default("general")
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

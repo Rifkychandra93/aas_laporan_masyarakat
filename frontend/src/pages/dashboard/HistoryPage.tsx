@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   History as HistoryIcon, 
   Search, 
-  Filter, 
-  Calendar, 
   Clock, 
   ArrowRight,
   FileText,
-  AlertCircle
 } from "lucide-react";
 import DashboardNavbar from "../../components/ui/DashboardNavbar";
 import { getAllLaporan } from "../../services/laporanService";
