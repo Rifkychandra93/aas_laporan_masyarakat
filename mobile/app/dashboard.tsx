@@ -4,7 +4,6 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
   Image,
@@ -18,6 +17,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { getProfile } from "../services/auth";
 import { getReports, type Laporan } from "../services/laporan";
 import { getNotifications } from "../services/notification";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 export default function Dashboard() {
   const [reports, setReports] = useState<Laporan[]>([]);
@@ -77,7 +78,7 @@ export default function Dashboard() {
   const getReportImageUrl = (image: string | null) => {
     if (!image) return null;
     if (image.startsWith("http")) return image;
-    return `http://192.168.0.104:3000/uploads/${image}`;
+    return `http://192.168.0.106:3000/uploads/${image}`;
   };
 
   const getInitials = (name: string) => {
@@ -341,7 +342,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 24,
     // Spacing adjustment pushed down for notch clearance on iOS/Android
-    paddingTop: Platform.OS === "ios" ? 60 : 54,
+    paddingTop: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

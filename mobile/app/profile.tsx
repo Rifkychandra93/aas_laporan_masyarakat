@@ -2,7 +2,6 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
   TextInput,
@@ -14,6 +13,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { getProfile, updateProfile } from "../services/auth";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 export default function Profile() {
   const [user, setUser] = useState<any>(null);
@@ -237,7 +238,7 @@ const styles = StyleSheet.create({
 
   header: {
     paddingHorizontal: 24,
-    paddingTop: Platform.OS === "ios" ? 60 : 54,
+    paddingTop: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

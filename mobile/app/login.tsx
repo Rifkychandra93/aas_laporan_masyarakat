@@ -6,13 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  SafeAreaView,
   StatusBar,
   Alert,
 } from "react-native";
 
 import { router } from "expo-router";
 import { loginUser } from "../services/auth";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -139,7 +140,8 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 28,
-    justifyContent: "center",
+    justifyContent: "flex-start",
+    paddingTop: 60,
   },
 
   logo: {

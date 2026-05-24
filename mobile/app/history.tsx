@@ -2,7 +2,6 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
   Image,
@@ -15,6 +14,8 @@ import { router, useFocusEffect } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { getReports, type Laporan } from "../services/laporan";
 import { getProfile } from "../services/auth";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 export default function History() {
   const [myReports, setMyReports] = useState<Laporan[]>([]);
@@ -61,7 +62,7 @@ export default function History() {
   const getReportImageUrl = (image: string | null) => {
     if (!image) return null;
     if (image.startsWith("http")) return image;
-    return `http://192.168.0.104:3000/uploads/${image}`;
+    return `http://192.168.0.106:3000/uploads/${image}`;
   };
 
   const formatDate = (dateString: string) => {
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
 
   header: {
     paddingHorizontal: 24,
-    paddingTop: Platform.OS === "ios" ? 60 : 54,
+    paddingTop: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

@@ -2,7 +2,6 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   TextInput,
   ScrollView,
@@ -17,6 +16,8 @@ import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import { createLaporan } from "../../services/laporan";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 const SEVERITY_OPTIONS = [
   { value: "low", label: "Rendah", color: "#16a34a", bg: "#f0fdf4" },
@@ -381,7 +382,7 @@ const styles = StyleSheet.create({
 
   header: {
     paddingHorizontal: 24,
-    paddingTop: Platform.OS === "ios" ? 60 : 54,
+    paddingTop: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

@@ -2,7 +2,6 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
   Image,
@@ -21,6 +20,8 @@ import * as Location from "expo-location";
 import { getLaporanById, deleteLaporan, updateLaporan } from "../../services/laporan";
 import { getProfile } from "../../services/auth";
 import { createComment, deleteComment } from "../../services/comment";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 const SEVERITY_OPTIONS = [
   { value: "low", label: "Rendah", color: "#16a34a", bg: "#f0fdf4" },
@@ -275,7 +276,7 @@ export default function LaporanDetail() {
   const getReportImageUrl = (image: string | null) => {
     if (!image) return null;
     if (image.startsWith("http")) return image;
-    return `http://192.168.0.104:3000/uploads/${image}`;
+    return `http://192.168.0.106:3000/uploads/${image}`;
   };
 
   const getInitials = (name: string) => {
@@ -748,7 +749,7 @@ const styles = StyleSheet.create({
 
   header: {
     paddingHorizontal: 24,
-    paddingTop: Platform.OS === "ios" ? 60 : 54,
+    paddingTop: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
