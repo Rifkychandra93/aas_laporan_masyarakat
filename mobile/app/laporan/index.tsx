@@ -87,15 +87,38 @@ export default function CreateLaporan() {
         return;
       }
 
-      const location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
-      });
+      let location: Location.LocationObject | null = null;
 
-      setLatitude(location.coords.latitude.toFixed(6));
-      setLongitude(location.coords.longitude.toFixed(6));
+      try {
+        // Coba dapatkan posisi terkini dengan timeout 10 detik
+        location = await Promise.race([
+          Location.getCurrentPositionAsync({
+            accuracy: Location.Accuracy.Low,
+          }),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("timeout")), 10000)
+          ),
+        ]);
+      } catch {
+        // Fallback: gunakan posisi terakhir yang diketahui
+        location = await Location.getLastKnownPositionAsync();
+      }
+
+      if (location) {
+        setLatitude(location.coords.latitude.toFixed(6));
+        setLongitude(location.coords.longitude.toFixed(6));
+      } else {
+        Alert.alert(
+          "Lokasi Tidak Tersedia",
+          "GPS tidak dapat mendeteksi lokasi Anda saat ini. Pastikan GPS aktif atau isi koordinat secara manual."
+        );
+      }
     } catch (error) {
       console.error("Gagal mendapatkan lokasi:", error);
-      Alert.alert("Error", "Gagal mendapatkan lokasi GPS Anda.");
+      Alert.alert(
+        "Lokasi Tidak Tersedia",
+        "Pastikan GPS perangkat Anda aktif, lalu coba lagi."
+      );
     } finally {
       setLocationLoading(false);
     }

@@ -1,107 +1,11 @@
 import Reveal from "./Reveal";
 
-const stats = [
-  {
-    value: "12.400+",
-    label: "Laporan Masuk",
-    icon: "📋",
-    color: "#5b9cf6",
-    bg: "#F0F6FF",
-  },
-  {
-    value: "92%",
-    label: "Penyelesaian",
-    icon: "✅",
-    color: "#10b981",
-    bg: "#f0fdf4",
-  },
-  {
-    value: "48 Jam",
-    label: "Rata-rata Respons",
-    icon: "⚡",
-    color: "#f59e0b",
-    bg: "#fffbeb",
-  },
-  {
-    value: "38 Kota",
-    label: "Wilayah Aktif",
-    icon: "🗺️",
-    color: "#8b5cf6",
-    bg: "#f5f3ff",
-  },
-];
-
 const StatsSection = () => {
   return (
     <section id="statistik" style={{ padding: "6rem 0", background: "#ffffff" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem" }}>
         
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: "2rem",
-          marginBottom: "4rem",
-        }}>
-          {stats.map((stat, idx) => (
-            <Reveal key={stat.label} delay={idx * 100}>
-              <div
-                style={{
-                  background: "#ffffff",
-                  borderRadius: 24,
-                  border: "1px solid #f1f5f9",
-                  padding: "2.5rem 2rem",
-                  textAlign: "center",
-                  boxShadow: "0 10px 30px -10px rgba(0,0,0,0.05)",
-                  transition: "all 0.3s ease",
-                  height: "100%",
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.transform = "translateY(-8px)";
-                  (e.currentTarget as HTMLElement).style.boxShadow = "0 20px 40px -10px rgba(0,0,0,0.1)";
-                  (e.currentTarget as HTMLElement).style.borderColor = stat.bg;
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
-                  (e.currentTarget as HTMLElement).style.boxShadow = "0 10px 30px -10px rgba(0,0,0,0.05)";
-                  (e.currentTarget as HTMLElement).style.borderColor = "#f1f5f9";
-                }}
-              >
-                <div style={{
-                  width: 72,
-                  height: 72,
-                  borderRadius: 20,
-                  background: stat.bg,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  margin: "0 auto 1.5rem",
-                  fontSize: "2rem",
-                }}>
-                  {stat.icon}
-                </div>
 
-                <p style={{
-                  fontSize: "2.5rem",
-                  fontWeight: 900,
-                  color: "#0f172a",
-                  letterSpacing: "-0.03em",
-                  lineHeight: 1,
-                  marginBottom: "0.5rem",
-                }}>
-                  {stat.value}
-                </p>
-
-                <p style={{
-                  fontSize: "1rem",
-                  fontWeight: 700,
-                  color: "#64748b",
-                }}>
-                  {stat.label}
-                </p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
 
         <Reveal delay={200} direction="up">
           <div style={{

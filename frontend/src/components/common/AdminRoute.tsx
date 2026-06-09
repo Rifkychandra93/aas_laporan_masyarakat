@@ -13,7 +13,6 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
     return <Navigate to="/login" replace />;
   }
 
-  // Safe check for role (case-insensitive)
   if (user?.role?.toLowerCase() !== "admin") {
     return <Navigate to="/dashboard" replace />;
   }

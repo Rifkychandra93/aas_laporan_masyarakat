@@ -16,6 +16,8 @@ model User {
   location      String?
   createdAt     DateTime       @default(now())
 
+  isBanned      Boolean        @default(false)
+
   laporan       Laporan[]
   comments      Comment[]
   notifications Notification[]

@@ -78,7 +78,7 @@ export default function Dashboard() {
   const getReportImageUrl = (image: string | null) => {
     if (!image) return null;
     if (image.startsWith("http")) return image;
-    return `http://192.168.0.106:3000/uploads/${image}`;
+    return `http://192.168.43.124:3000/uploads/${image}`;
   };
 
   const getInitials = (name: string) => {

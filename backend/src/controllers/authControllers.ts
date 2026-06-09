@@ -12,6 +12,9 @@ export const register = async (req: Request, res: Response) => {
     });
 
     if (existingUser) {
+      if (existingUser.isBanned) {
+        return res.status(400).json({ message: "Akun gmail sudah terbanned" });
+      }
       return res.status(400).json({ message: "Email sudah terdaftar" });
     }
 
@@ -44,6 +47,10 @@ export const login = async (req: Request, res: Response) => {
 
     if (!user) {
       return res.status(404).json({ message: "User tidak ditemukan" });
+    }
+
+    if (user.isBanned) {
+      return res.status(403).json({ message: "Akun sudah di hapus" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);

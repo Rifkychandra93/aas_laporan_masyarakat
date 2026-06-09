@@ -72,3 +72,13 @@ export const deleteLaporanAdmin = async (id: number) => {
   );
   return response.data;
 };
+
+export const deleteUserAdmin = async (id: number) => {
+  const response = await axios.delete(
+    `${API_URL}/users/${id}`,
+    {
+      headers: getHeaders(),
+    }
+  );
+  return response.data;
+};

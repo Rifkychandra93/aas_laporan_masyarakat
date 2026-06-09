@@ -29,6 +29,7 @@ import {
   approveLaporan,
   rejectLaporan,
   deleteLaporanAdmin,
+  deleteUserAdmin,
   type AdminStats,
   type AdminUser
 } from "../../services/adminService";
@@ -146,6 +147,23 @@ const AdminDashboard = () => {
       await handleRefreshStatsAndReports();
     } catch (error) {
       alert("Gagal menghapus laporan");
+      console.error(error);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleDeleteUser = async (id: number) => {
+    if (!window.confirm("Apakah Anda yakin ingin menghapus pengguna ini? Pengguna tidak akan dapat login atau mendaftar kembali dengan email tersebut.")) {
+      return;
+    }
+    setActionLoading(id);
+    try {
+      await deleteUserAdmin(id);
+      const updatedUsers = await getAllUsers();
+      setUsersList(updatedUsers);
+    } catch (error) {
+      alert("Gagal menghapus pengguna");
       console.error(error);
     } finally {
       setActionLoading(null);
@@ -504,7 +522,8 @@ const AdminDashboard = () => {
                           <th style={tableHeaderCellStyle}>LOKASI</th>
                           <th style={tableHeaderCellStyle}>TANGGAL GABUNG</th>
                           <th style={{ ...tableHeaderCellStyle, textAlign: "center" }}>LAPORAN DIBUAT</th>
-                          <th style={{ ...tableHeaderCellStyle, paddingRight: "1.5rem", width: 100 }}>ROLE</th>
+                          <th style={tableHeaderCellStyle}>ROLE</th>
+                          <th style={{ ...tableHeaderCellStyle, paddingRight: "1.5rem", width: 100 }}>AKSI</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -546,7 +565,7 @@ const AdminDashboard = () => {
                                   {u._count?.laporan || 0}
                                 </span>
                               </td>
-                              <td style={{ ...tableBodyCellStyle, paddingRight: "1.5rem" }}>
+                              <td style={tableBodyCellStyle}>
                                 <span style={{
                                   fontSize: "0.65rem",
                                   fontWeight: 800,
@@ -559,11 +578,32 @@ const AdminDashboard = () => {
                                   {u.role}
                                 </span>
                               </td>
+                              <td style={{ ...tableBodyCellStyle, paddingRight: "1.5rem" }}>
+                                {u.role?.toLowerCase() !== "admin" && (
+                                  <button
+                                    onClick={() => handleDeleteUser(u.id)}
+                                    disabled={actionLoading === u.id}
+                                    style={{
+                                      background: "#fef2f2",
+                                      color: "#dc2626",
+                                      border: "none",
+                                      padding: "0.4rem 0.8rem",
+                                      borderRadius: 6,
+                                      fontSize: "0.75rem",
+                                      fontWeight: 600,
+                                      cursor: actionLoading === u.id ? "not-allowed" : "pointer",
+                                      opacity: actionLoading === u.id ? 0.7 : 1
+                                    }}
+                                  >
+                                    {actionLoading === u.id ? "Menghapus..." : "Hapus"}
+                                  </button>
+                                )}
+                              </td>
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={5} style={{ textAlign: "center", padding: "4rem", color: "#94a3b8" }}>
+                            <td colSpan={6} style={{ textAlign: "center", padding: "4rem", color: "#94a3b8" }}>
                               Tidak ada pengguna ditemukan.
                             </td>
                           </tr>

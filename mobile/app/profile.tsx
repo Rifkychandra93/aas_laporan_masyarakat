@@ -142,7 +142,7 @@ export default function Profile() {
             
             <View style={styles.roleBadge}>
               <Text style={styles.roleText}>
-                {user?.role?.toLowerCase() === "admin"
+                {user?.role?.toLowerCase() === "user"
                   ? "User"
                   : "Admin"}
               </Text>
