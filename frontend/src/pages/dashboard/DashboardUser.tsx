@@ -75,7 +75,6 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          {/* STATS */}
         <DashboardStats
           total={reports.length}
           pending={pending}

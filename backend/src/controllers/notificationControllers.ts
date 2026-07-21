@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
 
-// GET all notifications for logged-in user
 export const getUserNotifications = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
@@ -18,7 +17,6 @@ export const getUserNotifications = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ PUT mark a notification as read
 export const markAsRead = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
@@ -39,7 +37,6 @@ export const markAsRead = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ PUT mark all notifications for user as read
 export const markAllAsRead = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;

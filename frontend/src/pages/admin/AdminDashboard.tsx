@@ -51,23 +51,17 @@ const statusColors: Record<string, { bg: string; text: string; border: string }>
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  
-  // Tabs: 'overview' | 'users' | 'reports'
   const [activeTab, setActiveTab] = useState<"overview" | "users" | "reports">("overview");
-  
-  // Data State
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [usersList, setUsersList] = useState<AdminUser[]>([]);
   const [reportsList, setReportsList] = useState<Laporan[]>([]);
-  
-  // UI State
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchUser, setSearchUser] = useState("");
   const [searchReport, setSearchReport] = useState("");
-  const [reportFilter, setReportFilter] = useState<string>("all"); // 'all' | 'pending' | 'approved' | 'rejected'
+  const [reportFilter, setReportFilter] = useState<string>("all"); 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [actionLoading, setActionLoading] = useState<number | null>(null); // holds report ID currently being updated
+  const [actionLoading, setActionLoading] = useState<number | null>(null); 
   
   useEffect(() => {
     fetchInitialData();
@@ -83,7 +77,6 @@ const AdminDashboard = () => {
       ]);
       setStats(statsData);
       setUsersList(usersData);
-      // Sort reports by newest
       const sortedReports = [...reportsData].sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
@@ -175,7 +168,6 @@ const AdminDashboard = () => {
     navigate("/login");
   };
 
-  // Filters and searches
   const filteredUsers = usersList.filter(u =>
     u.name.toLowerCase().includes(searchUser.toLowerCase()) ||
     u.email.toLowerCase().includes(searchUser.toLowerCase()) ||
@@ -199,13 +191,11 @@ const AdminDashboard = () => {
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#f8fafc", fontFamily: "'Inter', sans-serif" }}>
       
-      {/* SIDEBAR */}
       <aside style={{
         ...sidebarStyle,
         transform: sidebarOpen ? "translateX(0)" : undefined,
       }} className="admin-sidebar">
         <div>
-          {/* Sidebar Brand Logo */}
           <div style={brandContainerStyle}>
             <img 
               src={logo} 
@@ -224,7 +214,6 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Navigation Links */}
           <nav style={{ display: "flex", flexDirection: "column", gap: "0.4rem", padding: "1rem" }}>
             <button
               onClick={() => { setActiveTab("overview"); setSidebarOpen(false); }}
@@ -258,7 +247,6 @@ const AdminDashboard = () => {
           </nav>
         </div>
 
-        {/* Sidebar Footer Account & Logout */}
         <div style={sidebarFooterStyle}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem" }}>
             <div style={adminAvatarStyle}>
@@ -280,7 +268,6 @@ const AdminDashboard = () => {
         </div>
       </aside>
 
-      {/* MOBILE SIDEBAR OVERLAY */}
       {sidebarOpen && (
         <div 
           onClick={() => setSidebarOpen(false)}
@@ -288,10 +275,7 @@ const AdminDashboard = () => {
         />
       )}
 
-      {/* MAIN CONTENT AREA */}
       <main style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, marginLeft: sidebarWidth }} className="admin-main">
-        
-        {/* HEADER NAVBAR */}
         <header style={headerStyle}>
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
             <button onClick={() => setSidebarOpen(!sidebarOpen)} style={sidebarToggleStyle} className="sidebar-toggle-btn">
@@ -312,7 +296,6 @@ const AdminDashboard = () => {
           </div>
         </header>
 
-        {/* CONTAINER CONTENT */}
         <div style={{ padding: "1.5rem", flex: 1, overflowY: "auto" }}>
           
           {loading ? (
@@ -322,11 +305,8 @@ const AdminDashboard = () => {
             </div>
           ) : (
             <>
-              {/* TAB 1: OVERVIEW */}
               {activeTab === "overview" && (
                 <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-                  
-                  {/* METRIC COUNTERS GRID */}
                   <div style={metricsGridStyle}>
                     <div style={{ ...metricCardStyle, borderLeft: "4px solid #3b82f6" }}>
                       <div style={metricContentStyle}>
@@ -389,10 +369,8 @@ const AdminDashboard = () => {
                     </div>
                   </div>
 
-                  {/* QUICK STATS ROW */}
                   <div style={overviewRowStyle}>
                     
-                    {/* RECENT REPORTS */}
                     <div style={{ ...whiteCardStyle, flex: 2, minWidth: 290 }}>
                       <div style={cardHeaderStyle}>
                         <h4 style={cardTitleStyle}>Laporan Terbaru Masuk</h4>
@@ -444,7 +422,6 @@ const AdminDashboard = () => {
                       </div>
                     </div>
 
-                    {/* NEWEST USERS SUMMARY */}
                     <div style={{ ...whiteCardStyle, flex: 1, minWidth: 290 }}>
                       <div style={cardHeaderStyle}>
                         <h4 style={cardTitleStyle}>Pengguna Baru Terdaftar</h4>
@@ -479,11 +456,9 @@ const AdminDashboard = () => {
                 </div>
               )}
 
-              {/* TAB 2: MANAGE USERS */}
               {activeTab === "users" && (
                 <div style={whiteCardStyle}>
                   
-                  {/* BAR CONTROL */}
                   <div style={barControlStyle}>
                     <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
                       <h4 style={{ fontSize: "1.05rem", fontWeight: 800, color: "#0f172a", margin: 0 }}>
@@ -513,7 +488,6 @@ const AdminDashboard = () => {
                     </div>
                   </div>
 
-                  {/* USER TABLE CONTAINER */}
                   <div style={{ overflowX: "auto", margin: "1rem -1.5rem -1.5rem", borderTop: "1px solid #f1f5f9" }}>
                     <table style={tableStyle}>
                       <thead>
@@ -614,14 +588,11 @@ const AdminDashboard = () => {
                 </div>
               )}
 
-              {/* TAB 3: VERIFY REPORTS */}
               {activeTab === "reports" && (
                 <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                   
-                  {/* CONTROLS BAR */}
                   <div style={whiteCardStyle}>
                     <div style={reportsBarControlStyle}>
-                      {/* Search */}
                       <div style={{ ...searchContainerStyle, flex: 1, minWidth: 260 }}>
                         <Search size={16} color="#94a3b8" />
                         <input
@@ -633,7 +604,6 @@ const AdminDashboard = () => {
                         />
                       </div>
 
-                      {/* Filters */}
                       <div style={filtersGroupStyle}>
                         <div style={{ display: "flex", alignItems: "center", gap: "0.3rem", color: "#64748b", fontSize: "0.8rem", fontWeight: 700 }}>
                           <Filter size={14} />
@@ -670,7 +640,6 @@ const AdminDashboard = () => {
                     </div>
                   </div>
 
-                  {/* LIST CARDS LAPORAN */}
                   <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                     {filteredReports.length > 0 ? (
                       filteredReports.map((report) => {
@@ -682,10 +651,8 @@ const AdminDashboard = () => {
                           <div key={report.id} style={reportRowCardStyle}>
                             <div style={reportMainLayout}>
                               
-                              {/* Left Info Panel */}
                               <div style={reportLeftPanel}>
                                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-                                  {/* Status badge */}
                                   <span style={{
                                     fontSize: "0.65rem",
                                     fontWeight: 900,
@@ -699,7 +666,6 @@ const AdminDashboard = () => {
                                     {report.status}
                                   </span>
 
-                                  {/* Category */}
                                   <span style={{
                                     fontSize: "0.65rem",
                                     fontWeight: 800,
@@ -711,7 +677,6 @@ const AdminDashboard = () => {
                                     {report.category?.name || "Umum"}
                                   </span>
 
-                                  {/* Severity */}
                                   <span style={{
                                     fontSize: "0.65rem",
                                     fontWeight: 800,
@@ -755,7 +720,6 @@ const AdminDashboard = () => {
                                 </div>
                               </div>
 
-                              {/* Right Image Attachment */}
                               {report.image && (
                                 <div style={reportRightPanel}>
                                   <div 
@@ -778,7 +742,6 @@ const AdminDashboard = () => {
                               )}
                             </div>
 
-                            {/* Action Bottom Bar */}
                             <div style={reportActionBarStyle}>
                               <div style={{ fontSize: "0.8rem", color: "#64748b" }}>
                                 ID Laporan: <strong style={{ color: "#1e293b" }}>#{report.id}</strong>
@@ -809,7 +772,6 @@ const AdminDashboard = () => {
                                   </div>
                                 )}
 
-                                {/* Admin can delete any report */}
                                 <button
                                   disabled={actionLoading !== null}
                                   onClick={() => handleDeleteReport(report.id)}
@@ -839,7 +801,6 @@ const AdminDashboard = () => {
         </div>
       </main>
 
-      {/* POPUP LIGHTBOX FOR ATTACHMENT IMAGE */}
       {selectedImage && (
         <div style={lightboxOverlayStyle} onClick={() => setSelectedImage(null)}>
           <button style={lightboxCloseButtonStyle} onClick={() => setSelectedImage(null)}>
@@ -854,7 +815,6 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* CSS Injected Styles for Hover & Media queries */}
       <style>{`
         /* Sidebar active & standard styling transitions */
         .admin-sidebar {

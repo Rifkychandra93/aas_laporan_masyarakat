@@ -31,11 +31,10 @@ export default function Dashboard() {
     try {
       const [reportsData, profileData, notificationsData] = await Promise.all([
         getReports(),
-        getProfile().catch(() => null), // Fail-safe fallback if profile fetch fails
+        getProfile().catch(() => null),
         getNotifications().catch(() => []),
       ]);
-      
-      // Sort reports by newest first
+
       const sortedReports = [...reportsData].sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
@@ -45,7 +44,6 @@ export default function Dashboard() {
         setUserProfile(profileData);
       }
 
-      // Check if any unread notification exists
       const unreadExist = notificationsData.some((n: any) => !n.isRead);
       setHasUnreadNotifications(unreadExist);
     } catch (error) {
@@ -78,7 +76,7 @@ export default function Dashboard() {
   const getReportImageUrl = (image: string | null) => {
     if (!image) return null;
     if (image.startsWith("http")) return image;
-    return `http://192.168.43.124:3000/uploads/${image}`;
+    return `http://192.168.0.102:3000/uploads/${image}`;
   };
 
   const getInitials = (name: string) => {

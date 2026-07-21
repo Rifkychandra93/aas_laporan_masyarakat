@@ -177,7 +177,6 @@ const DetailLaporanPage = () => {
 
         <div className="main-grid" style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: "1.25rem", alignItems: "start" }}>
 
-          {/* ════════ LEFT ════════ */}
           <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             <div style={cardWrapperStyle}>
               {laporan.image && !imgErr ? (
@@ -208,7 +207,6 @@ const DetailLaporanPage = () => {
               <p style={descStyle}>{laporan.description}</p>
             </div>
 
-            {/* DISCUSSION */}
             <div style={contentCardStyle}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "1.5rem" }}>
                 <MessageSquare size={20} color="#3b82f6" />
@@ -327,7 +325,6 @@ const DetailLaporanPage = () => {
   );
 };
 
-/* ── Styles ── */
 const backButtonStyle: React.CSSProperties = {
   display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.45rem 1rem 0.45rem 0.75rem",
   borderRadius: 999, border: "1px solid #e2e8f0", background: "#fff", color: "#475569", fontSize: "0.82rem",

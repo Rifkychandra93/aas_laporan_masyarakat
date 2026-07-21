@@ -86,7 +86,7 @@ const EditLaporanPage = () => {
     if (!file) return;
     setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
-    setExistingImage(null); // Clear existing if new selected
+    setExistingImage(null);
   };
 
   const removeImage = () => {
@@ -130,8 +130,6 @@ const EditLaporanPage = () => {
       if (imageFile) {
         fd.append("image", imageFile);
       } else if (existingImage) {
-        // We might need a way to tell the backend to keep the existing image
-        // Usually, if 'image' is not sent, it stays the same.
       }
 
       await updateLaporan(Number(id), fd);
@@ -201,7 +199,6 @@ const EditLaporanPage = () => {
 
         <form onSubmit={handleSubmit}>
           <div style={cardStyle}>
-            {/* ── SECTION: INFO DASAR ── */}
             <div style={{ padding: "1.5rem", borderBottom: "1px solid #f1f5f9" }}>
               <SectionLabel icon={<FileText size={15} />} title="Informasi Laporan" />
 
@@ -245,7 +242,6 @@ const EditLaporanPage = () => {
               </div>
             </div>
 
-            {/* ── SECTION: LOKASI ── */}
             <div style={{ padding: "1.5rem", borderBottom: "1px solid #f1f5f9" }}>
               <SectionLabel icon={<MapPin size={15} />} title="Lokasi Kejadian" />
 
@@ -263,7 +259,6 @@ const EditLaporanPage = () => {
               </button>
             </div>
 
-            {/* ── SECTION: FOTO ── */}
             <div style={{ padding: "1.5rem" }}>
               <SectionLabel icon={<Upload size={15} />} title="Foto Pendukung" />
 
@@ -331,7 +326,6 @@ const EditLaporanPage = () => {
   );
 };
 
-/* ── Styles ── */
 const backButtonStyle: React.CSSProperties = {
   display: "flex", alignItems: "center", justifyContent: "center",
   width: 36, height: 36, borderRadius: 10, border: "1px solid #e2e8f0",

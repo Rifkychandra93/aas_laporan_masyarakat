@@ -32,7 +32,6 @@ const HistoryPage = () => {
   const fetchMyReports = async () => {
     try {
       const allData = await getAllLaporan();
-      // Filter for current user's reports
       const myData = allData.filter((r: Laporan) => r.user?.id === user?.id);
       setReports(myData);
     } catch (error) {
@@ -53,7 +52,6 @@ const HistoryPage = () => {
 
       <div style={{ maxWidth: 1000, margin: "0 auto", padding: "2.5rem 1.5rem" }}>
         
-        {/* HEADER */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "2rem" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", color: "#3b82f6", marginBottom: "0.4rem" }}>
@@ -86,7 +84,6 @@ const HistoryPage = () => {
           </div>
         </div>
 
-        {/* LIST TABLE-LIKE VIEW */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           {loading ? (
              [...Array(5)].map((_, i) => <div key={i} style={{ height: 100, background: "#fff", borderRadius: 16, border: "1px solid #e2e8f0", animation: "pulse 1.5s infinite" }} />)
@@ -118,7 +115,6 @@ const HistoryPage = () => {
                     (e.currentTarget as HTMLDivElement).style.borderColor = "#e2e8f0";
                 }}
               >
-                {/* DATE BADGE */}
                 <div style={{
                   minWidth: 70,
                   height: 70,
@@ -138,7 +134,6 @@ const HistoryPage = () => {
                   </span>
                 </div>
 
-                {/* INFO */}
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.3rem" }}>
                     <span style={{ 

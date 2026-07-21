@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
 
-// ✅ APPROVE laporan
 export const approveLaporan = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
@@ -13,7 +12,6 @@ export const approveLaporan = async (req: Request, res: Response) => {
       },
     });
 
-    // Create Notification for the user
     await prisma.notification.create({
       data: {
         userId: laporan.userId,
@@ -35,7 +33,6 @@ export const approveLaporan = async (req: Request, res: Response) => {
   }
 };
 
-// ❌ REJECT laporan
 export const rejectLaporan = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
@@ -47,7 +44,6 @@ export const rejectLaporan = async (req: Request, res: Response) => {
       },
     });
 
-    // Create Notification for the user
     await prisma.notification.create({
       data: {
         userId: laporan.userId,
@@ -74,38 +70,32 @@ export const dashboardStats = async (
     res: Response
   ) => {
     try {
-      // total laporan
       const totalLaporan = await prisma.laporan.count();
   
-      // laporan pending
       const pendingLaporan = await prisma.laporan.count({
         where: {
           status: "pending",
         },
       });
   
-      // laporan approved
       const approvedLaporan = await prisma.laporan.count({
         where: {
           status: "approved",
         },
       });
   
-      // laporan rejected
       const rejectedLaporan = await prisma.laporan.count({
         where: {
           status: "rejected",
         },
       });
   
-      // total user
       const totalUser = await prisma.user.count({
         where: {
           isBanned: false,
         },
       });
   
-      // total category
       const totalCategory = await prisma.category.count();
   
       res.json({
@@ -125,7 +115,6 @@ export const dashboardStats = async (
     }
   };
 
-// ✅ GET all users
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany({
@@ -159,12 +148,10 @@ export const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-// 🗑️ DELETE laporan by Admin
 export const deleteLaporanAdmin = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
 
-    // 1. Fetch laporan details first to get userId and title
     const laporan = await prisma.laporan.findUnique({
       where: { id },
     });
@@ -173,12 +160,10 @@ export const deleteLaporanAdmin = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Laporan tidak ditemukan" });
     }
 
-    // 2. Delete the laporan
     await prisma.laporan.delete({
       where: { id },
     });
 
-    // 3. Create Notification for the user
     await prisma.notification.create({
       data: {
         userId: laporan.userId,
@@ -199,7 +184,6 @@ export const deleteLaporanAdmin = async (req: Request, res: Response) => {
   }
 };
 
-// 🗑️ DELETE (Ban) User by Admin
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
@@ -212,7 +196,6 @@ export const deleteUser = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Pengguna tidak ditemukan" });
     }
 
-    // We mark the user as banned instead of hard deleting so their email is kept and they can't register again
     await prisma.user.update({
       where: { id },
       data: { isBanned: true },

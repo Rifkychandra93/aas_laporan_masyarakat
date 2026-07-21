@@ -30,11 +30,9 @@ export default function History() {
       ]);
 
       if (profileData) {
-        // Filter reports to only show those created by current user
         const filtered = reportsData.filter(
           (report: any) => report.userId === profileData.id
         );
-        // Sort newest first
         const sorted = [...filtered].sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
@@ -62,7 +60,7 @@ export default function History() {
   const getReportImageUrl = (image: string | null) => {
     if (!image) return null;
     if (image.startsWith("http")) return image;
-    return `http://192.168.43.124:3000/uploads/${image}`;
+    return `http://192.168.0.102:3000/uploads/${image}`;
   };
 
   const formatDate = (dateString: string) => {

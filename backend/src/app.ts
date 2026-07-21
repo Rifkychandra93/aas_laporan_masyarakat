@@ -33,5 +33,5 @@ app.use("/api/admin", adminRoutes);
 
 
 app.listen(3000, () => {
-  console.log("Server running 🚀");
+  console.log("Server running");
 });

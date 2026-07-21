@@ -110,8 +110,6 @@ const CreateLaporanPage = () => {
       <DashboardNavbar />
 
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "2rem 1.5rem" }}>
-
-        {/* BACK + TITLE */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.75rem" }}>
           <button
             onClick={() => navigate("/dashboard")}
@@ -140,7 +138,6 @@ const CreateLaporanPage = () => {
           </div>
         </div>
 
-        {/* SUCCESS STATE */}
         {success && (
           <div style={{
             background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 14,
@@ -159,7 +156,6 @@ const CreateLaporanPage = () => {
           </div>
         )}
 
-        {/* ERROR */}
         {error && (
           <div style={{
             background: "#fff1f2", border: "1px solid #fecdd3", borderRadius: 14,
@@ -173,7 +169,6 @@ const CreateLaporanPage = () => {
           </div>
         )}
 
-        {/* FORM CARD */}
         <form onSubmit={handleSubmit}>
           <div style={{
             background: "#fff", borderRadius: 18, border: "1px solid #e2e8f0",
@@ -236,7 +231,6 @@ const CreateLaporanPage = () => {
               </div>
             </div>
 
-            {/* ── SECTION: LOKASI ── */}
             <div style={{ padding: "1.5rem", borderBottom: "1px solid #f1f5f9" }}>
               <SectionLabel icon={<MapPin size={15} />} title="Lokasi Kejadian" />
 
@@ -278,7 +272,6 @@ const CreateLaporanPage = () => {
               </button>
             </div>
 
-            {/* ── SECTION: FOTO ── */}
             <div style={{ padding: "1.5rem" }}>
               <SectionLabel icon={<Upload size={15} />} title="Foto Pendukung" />
 
@@ -343,7 +336,6 @@ const CreateLaporanPage = () => {
             </div>
           </div>
 
-          {/* SUBMIT */}
           <div style={{ display: "flex", gap: "0.75rem", marginTop: "1.25rem", justifyContent: "flex-end" }}>
             <button
               type="button"
@@ -391,7 +383,6 @@ const CreateLaporanPage = () => {
   );
 };
 
-/* ── Helper components ── */
 const SectionLabel = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
   <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "1rem" }}>
     <span style={{ color: "#3b82f6" }}>{icon}</span>

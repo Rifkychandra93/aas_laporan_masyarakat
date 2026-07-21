@@ -8,7 +8,6 @@ export const adminMiddleware = (
   try {
     const user = (req as any).user;
 
-    // cek role
     if (user.role !== "admin") {
       return res.status(403).json({
         message: "Akses admin ditolak",

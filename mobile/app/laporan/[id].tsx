@@ -276,7 +276,7 @@ export default function LaporanDetail() {
   const getReportImageUrl = (image: string | null) => {
     if (!image) return null;
     if (image.startsWith("http")) return image;
-    return `http://192.168.137.1:3000/uploads/${image}`;
+    return `http://192.168.0.102:3000/uploads/${image}`;
   };
 
   const getInitials = (name: string) => {

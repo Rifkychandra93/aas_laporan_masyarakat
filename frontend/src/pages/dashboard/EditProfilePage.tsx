@@ -47,7 +47,6 @@ const EditProfilePage = () => {
     try {
       const response = await updateProfile({ name });
       
-      // Update global auth state with new token
       if (response.token) {
         updateToken(response.token);
       }
