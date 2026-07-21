@@ -339,7 +339,6 @@ const styles = StyleSheet.create({
 
   header: {
     paddingHorizontal: 24,
-    // Spacing adjustment pushed down for notch clearance on iOS/Android
     paddingTop: 16,
     flexDirection: "row",
     justifyContent: "space-between",
